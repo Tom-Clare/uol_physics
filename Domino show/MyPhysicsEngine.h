@@ -84,13 +84,13 @@ namespace PhysicsEngine
 		{
 		}
 
-		virtual void createDominos() {
+		void createDominos() {
 			float x = 1.2f;
 			float y = 1.f;
 			float z = 0.f;
 			for (int i = 0; i <= 10; i++) {
 				x = x + 1.f;
-				z = z + 0.f;
+				//Domino* domino = new Domino(PxTransform(PxVec3(x, y, z), PxQuat(1.f, PxVec3(0.f, 0.1f, 0.f))));
 				Domino* domino = new Domino(PxTransform(PxVec3(x, y, z)));
 				domino->Color(color_palette[0]);
 				Add(domino);
