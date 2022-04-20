@@ -1,4 +1,5 @@
 #include "VisualDebugger.h"
+#include "BasicActors.h"
 #include <vector>
 #include "Extras\Camera.h"
 #include "Extras\Renderer.h"
@@ -40,7 +41,7 @@ namespace VisualDebugger
 	Camera* camera;
 	PhysicsEngine::MyScene* scene;
 	PxReal delta_time = 1.f/60.f;
-	PxReal gForceStrength = 1;
+	PxReal gForceStrength = 0.0005;
 	RenderMode render_mode = NORMAL;
 	const int MAX_KEYS = 256;
 	bool key_state[MAX_KEYS];
@@ -61,7 +62,7 @@ namespace VisualDebugger
 		Renderer::InitWindow(window_name, width, height);
 		Renderer::Init();
 
-		camera = new Camera(PxVec3(0.0f, 5.0f, 15.0f), PxVec3(0.f,-.1f,-1.f), 5.f);
+		camera = new Camera(PxVec3(0.0f, 1.0f, 5.0f), PxVec3(0.f,-.1f,-1.f), .5f);
 
 		//initialise HUD
 		HUDInit();
@@ -171,11 +172,18 @@ namespace VisualDebugger
 	//user defined keyboard handlers
 	void UserKeyPress(int key)
 	{
+		// Initialise objects that may appear during this function
+		PhysicsEngine::Sphere* sphere1;
+
 		switch (toupper(key))
 		{
 		//implement your own
 		case 'R':
 			break;
+		case 'T':
+			sphere1 = new PhysicsEngine::Sphere(PxTransform(PxVec3(-1.f, 2.f, .0f)), .03f, .5f);
+			sphere1->Color(PhysicsEngine::color_palette[1]);
+			scene->Add(sphere1);
 		default:
 			break;
 		}

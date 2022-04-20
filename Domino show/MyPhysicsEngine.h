@@ -40,7 +40,7 @@ namespace PhysicsEngine
 	class MyScene : public Scene
 	{
 		Plane* plane;
-		Box* box1;
+		BoxStatic* box1;
 		Box* box2;
 		Sphere* sphere1;
 
@@ -63,13 +63,13 @@ namespace PhysicsEngine
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
 			Add(plane);
 
-			/*box1 = new Box(PxTransform(PxVec3(.0f,10.f,.0f)));
+			box1 = new BoxStatic(PxTransform(PxVec3(-1.0f,.5f,.0f), PxQuat(-.3f, PxVec3(0.f, 0.f, 1.f))), PxVec3(2.f, .05f, 1.f));
 			box1->Color(color_palette[0]);
-			Add(box1);*/
+			Add(box1);
 
-			box2 = new Box(PxTransform(PxVec3(.0f, 8.f, .0f)), PxVec3(0.2f,0.2f,0.2f));
+			/*box2 = new Box(PxTransform(PxVec3(.0f, 1.f, .0f)), PxVec3(0.02f,0.02f,0.02f));
 			box2->Color(color_palette[1]);
-			Add(box2);
+			Add(box2);*/
 
 			/*sphere1 = new Sphere(PxTransform(PxVec3(1.f, 9.f, .0f)));
 			sphere1->Color(color_palette[1]);
@@ -86,10 +86,10 @@ namespace PhysicsEngine
 
 		void createDominos() {
 			float x = 1.2f;
-			float y = 1.f;
+			float y = .1f;
 			float z = 0.f;
-			for (int i = 0; i <= 10; i++) {
-				x = x + 1.f;
+			for (int i = 0; i <= 100; i++) {
+				x = x + .1f;
 				//Domino* domino = new Domino(PxTransform(PxVec3(x, y, z), PxQuat(1.f, PxVec3(0.f, 0.1f, 0.f))));
 				Domino* domino = new Domino(PxTransform(PxVec3(x, y, z)));
 				domino->Color(color_palette[0]);

@@ -33,7 +33,7 @@ namespace PhysicsEngine
 		}
 	};
 
-	///Box class
+	///Box (dynamic) class
 	class Box : public DynamicActor
 	{
 	public:
@@ -44,6 +44,21 @@ namespace PhysicsEngine
 		Box(const PxTransform& pose=PxTransform(PxIdentity), PxVec3 dimensions=PxVec3(.5f,.5f,.5f), PxReal density=1.f) 
 			: DynamicActor(pose)
 		{ 
+			CreateShape(PxBoxGeometry(dimensions), density);
+		}
+	};
+
+	///Box (static) class
+	class BoxStatic : public StaticActor
+	{
+	public:
+		//a Box with default parameters:
+		// - pose in 0,0,0
+		// - dimensions: 1m x 1m x 1m
+		// - denisty: 1kg/m^3
+		BoxStatic(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(.5f, .5f, .5f), PxReal density = 1.f)
+			: StaticActor(pose)
+		{
 			CreateShape(PxBoxGeometry(dimensions), density);
 		}
 	};
@@ -129,7 +144,7 @@ namespace PhysicsEngine
 		Domino(const PxTransform& pose = PxTransform(PxIdentity))
 			: DynamicActor(pose)
 		{
-			CreateShape(PxBoxGeometry(PxVec3(0.1f, 0.508f, .254f)), 1.f);
+			CreateShape(PxBoxGeometry(PxVec3(0.01f, 0.0508f, .0254f)), 1.f);
 		}
 	};
 }
