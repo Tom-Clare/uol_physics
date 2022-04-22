@@ -110,6 +110,10 @@ namespace VisualDebugger
 		hud.AddLine(HELP, "");
 		hud.AddLine(HELP, " Force (applied to the selected actor)");
 		hud.AddLine(HELP, "    I,K,J,L,U,M - forward,backward,left,right,up,down");
+		hud.AddLine(HELP, "");
+		hud.AddLine(HELP, " Domino show controls");
+		hud.AddLine(HELP, "    T - begin the show");
+		hud.AddLine(HELP, "    Y - ruin the show");
 		//add a pause screen
 		hud.AddLine(PAUSE, "");
 		hud.AddLine(PAUSE, "");
@@ -172,8 +176,6 @@ namespace VisualDebugger
 	//user defined keyboard handlers
 	void UserKeyPress(int key)
 	{
-		// Initialise objects that may appear during this function
-		PhysicsEngine::Sphere* sphere1;
 
 		switch (toupper(key))
 		{
@@ -181,9 +183,11 @@ namespace VisualDebugger
 		case 'R':
 			break;
 		case 'T':
-			sphere1 = new PhysicsEngine::Sphere(PxTransform(PxVec3(-1.f, 2.f, .0f)), .03f, .5f);
-			sphere1->Color(PhysicsEngine::color_palette[1]);
-			scene->Add(sphere1);
+			scene->beginShow();
+			break;
+		case 'Y':
+			scene->ruinShow();
+			break;
 		default:
 			break;
 		}
@@ -242,27 +246,27 @@ namespace VisualDebugger
 		switch (toupper(key))
 		{
 			// Force controls on the selected actor
-		case 'I': //forward
-			scene->GetSelectedActor()->addForce(PxVec3(0,0,-1)*gForceStrength);
-			break;
-		case 'K': //backward
-			scene->GetSelectedActor()->addForce(PxVec3(0,0,1)*gForceStrength);
-			break;
-		case 'J': //left
-			scene->GetSelectedActor()->addForce(PxVec3(-1,0,0)*gForceStrength);
-			break;
-		case 'L': //right
-			scene->GetSelectedActor()->addForce(PxVec3(1,0,0)*gForceStrength);
-			break;
-		case 'U': //up
-			scene->GetSelectedActor()->addForce(PxVec3(0,1,0)*gForceStrength);
-			break;
-		case 'M': //down
-			scene->GetSelectedActor()->addForce(PxVec3(0,-1,0)*gForceStrength);
-			break;
-		case 'P':
-			scene->SelectNextActor();
-			scene->GetSelectedActor()->addForce(PxVec3(0, -1, 0) * gForceStrength);
+		//case 'I': //forward
+		//	scene->GetSelectedActor()->addForce(PxVec3(0,0,-1)*gForceStrength);
+		//	break;
+		//case 'K': //backward
+		//	scene->GetSelectedActor()->addForce(PxVec3(0,0,1)*gForceStrength);
+		//	break;
+		//case 'J': //left
+		//	scene->GetSelectedActor()->addForce(PxVec3(-1,0,0)*gForceStrength);
+		//	break;
+		//case 'L': //right
+		//	scene->GetSelectedActor()->addForce(PxVec3(1,0,0)*gForceStrength);  ////// We don't want to apply forces to any actors.
+		//	break;
+		//case 'U': //up
+		//	scene->GetSelectedActor()->addForce(PxVec3(0,1,0)*gForceStrength);  ////// TODO maybe delete all of these that we don't need!
+		//	break;
+		//case 'M': //down
+		//	scene->GetSelectedActor()->addForce(PxVec3(0,-1,0)*gForceStrength);
+		//	break;
+		//case 'P':
+		//	scene->SelectNextActor();
+		//	scene->GetSelectedActor()->addForce(PxVec3(0, -1, 0) * gForceStrength);
 		default:
 			break;
 		}

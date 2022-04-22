@@ -147,4 +147,23 @@ namespace PhysicsEngine
 			CreateShape(PxBoxGeometry(PxVec3(0.01f, 0.0508f, .0254f)), 1.f);
 		}
 	};
+
+	class CompoundObject : public DynamicActor
+	{
+	public:
+		CompoundObject(const PxTransform& pose = PxTransform(PxIdentity))
+		: DynamicActor(pose)
+		{
+		}
+	};
+
+	class Pallet : public CompoundObject
+	{
+	public:
+		Pallet(const PxTransform& pose = PxTransform(PxIdentity))
+			: CompoundObject(pose)
+		{
+			CreateShape(PxBoxGeometry(PxVec3(1.f, 0.02f, 0.15f)), 1.f);
+		}
+	};
 }

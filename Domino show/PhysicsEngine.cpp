@@ -364,7 +364,7 @@ namespace PhysicsEngine
 		{
 			PxVec3* color = ((UserData*)shapes[i]->userData)->color;
 			sactor_color_orig.push_back(*color);
-			*color += PxVec3(.2f,.2f,.2f);
+			//*color += PxVec3(.2f,.2f,.2f); // TODO get rid of this
 		}
 	}
 

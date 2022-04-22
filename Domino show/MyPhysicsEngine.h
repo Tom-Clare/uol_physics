@@ -41,8 +41,9 @@ namespace PhysicsEngine
 	{
 		Plane* plane;
 		BoxStatic* box1;
-		Box* box2;
+		Box* cargo;
 		Sphere* sphere1;
+		CompoundObject* pallet;
 
 	public:
 		///A custom scene class
@@ -67,15 +68,8 @@ namespace PhysicsEngine
 			box1->Color(color_palette[0]);
 			Add(box1);
 
-			/*box2 = new Box(PxTransform(PxVec3(.0f, 1.f, .0f)), PxVec3(0.02f,0.02f,0.02f));
-			box2->Color(color_palette[1]);
-			Add(box2);*/
-
-			/*sphere1 = new Sphere(PxTransform(PxVec3(1.f, 9.f, .0f)));
-			sphere1->Color(color_palette[1]);
-			Add(sphere1);*/
-
 			createDominos();
+
 
 		}
 
@@ -92,9 +86,21 @@ namespace PhysicsEngine
 				x = x + .1f;
 				//Domino* domino = new Domino(PxTransform(PxVec3(x, y, z), PxQuat(1.f, PxVec3(0.f, 0.1f, 0.f))));
 				Domino* domino = new Domino(PxTransform(PxVec3(x, y, z)));
-				domino->Color(color_palette[0]);
+				domino->Color(PxVec3(0.f, 0.f, 0.f));
 				Add(domino);
 			}
+		}
+
+		void beginShow() {
+			sphere1 = new Sphere(PxTransform(PxVec3(-1.f, 2.f, .0f)), .03f, .5f);
+			sphere1->Color(PhysicsEngine::color_palette[1]);
+			Add(sphere1);
+		}
+
+		void ruinShow() {
+			cargo = new Box(PxTransform(PxVec3(2.f, 10.f, 0.f)), PxVec3(6.096f, 2.59f, 2.43f)); // 20ft x 8ft6 x 8ft
+			cargo->Color(PxVec3(0.f, 0.3f, 0.5f)); // murky blue
+			Add(cargo);
 		}
 	};
 }
