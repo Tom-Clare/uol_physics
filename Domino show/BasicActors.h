@@ -152,18 +152,30 @@ namespace PhysicsEngine
 	{
 	public:
 		CompoundObject(const PxTransform& pose = PxTransform(PxIdentity))
-		: DynamicActor(pose)
+			: DynamicActor(pose)
 		{
-		}
-	};
+			PxVec3 plank = PxVec3(.81f, 0.0254f, 0.1016f);
+			PxShape* shape;
+			int top = 6;
+			int support = 3;
 
-	class Pallet : public CompoundObject
-	{
-	public:
-		Pallet(const PxTransform& pose = PxTransform(PxIdentity))
-			: CompoundObject(pose)
-		{
-			CreateShape(PxBoxGeometry(PxVec3(1.f, 0.02f, 0.15f)), 1.f);
+			for (int i = 0; i < top; i++) {
+				CreateShape(PxBoxGeometry(plank), 1.f);
+				shape = GetShape(i);
+				shape->setLocalPose(PxTransform(PxVec3(0.f, 0.f, i*.285f)));
+			}
+
+			for (int i = 0; i < support; i++) {
+				CreateShape(PxBoxGeometry(plank), 1.f);
+				shape = GetShape(top + i);
+				shape->setLocalPose(PxTransform(PxVec3(-.78f + (i * .78f), -.125f, .71f), PxQuat(1.5708f, PxVec3(.0f, 1.0f, .0f))* PxQuat(1.5708f, PxVec3(1.f, .0f, .0f))));
+			}
+
+			for (int i = 0; i < 3; i++) {
+				CreateShape(PxBoxGeometry(plank), 1.f);
+				shape = GetShape(top + support + i);
+				shape->setLocalPose(PxTransform(PxVec3(.0f, -.25f, i * .70f)));
+			}
 		}
 	};
 }

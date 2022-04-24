@@ -43,7 +43,7 @@ namespace PhysicsEngine
 		BoxStatic* box1;
 		Box* cargo;
 		Sphere* sphere1;
-		CompoundObject* pallet;
+		CompoundObject* comp;
 
 	public:
 		///A custom scene class
@@ -70,7 +70,8 @@ namespace PhysicsEngine
 
 			createDominos();
 
-
+			comp = new CompoundObject(PxTransform(PxVec3(1.f, 3.f, -2.f)));
+			Add(comp);
 		}
 
 		//Custom udpate function
@@ -98,7 +99,7 @@ namespace PhysicsEngine
 		}
 
 		void ruinShow() {
-			cargo = new Box(PxTransform(PxVec3(2.f, 10.f, 0.f)), PxVec3(6.096f, 2.59f, 2.43f)); // 20ft x 8ft6 x 8ft
+			cargo = new Box(PxTransform(PxVec3(5.f, 10.f, 0.f)), PxVec3(6.096f, 2.59f, 2.43f)); // 20ft x 8ft6 x 8ft
 			cargo->Color(PxVec3(0.f, 0.3f, 0.5f)); // murky blue
 			Add(cargo);
 		}
