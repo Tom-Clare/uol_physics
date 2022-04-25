@@ -203,6 +203,17 @@ namespace PhysicsEngine
 			((UserData*)GetShape(i)->userData)->color = &colors[i];
 	}
 
+	void DynamicActor::CreateShape(const PxGeometry& geometry, PxReal density, PxMaterial* material)
+	{
+		PxShape* shape = ((PxRigidDynamic*)actor)->createShape(geometry, *material);
+		PxRigidBodyExt::updateMassAndInertia(*(PxRigidDynamic*)actor, density);
+		colors.push_back(default_color);
+		//pass the color pointers to the renderer
+		shape->userData = new UserData();
+		for (unsigned int i = 0; i < colors.size(); i++)
+			((UserData*)GetShape(i)->userData)->color = &colors[i];
+	}
+
 	void DynamicActor::SetKinematic(bool value, PxU32 index)
 	{
 #if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3

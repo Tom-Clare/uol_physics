@@ -74,6 +74,7 @@ namespace PhysicsEngine
 		~DynamicActor();
 
 		void CreateShape(const PxGeometry& geometry, PxReal density);
+		void CreateShape(const PxGeometry& geometry, PxReal density, PxMaterial* material);
 
 		void SetKinematic(bool value, PxU32 index=-1);
 	};

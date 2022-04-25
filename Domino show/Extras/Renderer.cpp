@@ -249,18 +249,18 @@ namespace VisualDebugger
 		void Init()
 		{
 			// Setup default render states
-			PxReal specular_material[]	= { .1f, .1f, .1f, 0.f };
+			PxReal specular_material[]	= { .1f, .1f, .1f, 1.f };
 			glEnable(GL_DEPTH_TEST);
 			glEnable(GL_COLOR_MATERIAL);
 			glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
-			glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, .3f);
+			glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, .025f);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular_material);
 
 			// Setup lighting
 			glEnable(GL_LIGHTING);
-			PxReal ambientColor[]	= { 0.2f, 0.2f, 0.2f, 1.f };
-			PxReal diffuseColor[]	= { 1.f, 1.0f, 1.0f, 1.f };		
-			PxReal position[]		= { 50.f, 50.f, 100.f, 0.f };		
+			PxReal ambientColor[]	= { 0.55f, 0.55f, 0.55f, 1.f };
+			PxReal diffuseColor[]	= { .02f, .02f, .02f, 1.f };		
+			PxReal position[]		= { 25.f, 25.f, 100.f, 5.f };		
 			glLightfv(GL_LIGHT0, GL_AMBIENT, ambientColor);
 			glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseColor);
 			glLightfv(GL_LIGHT0, GL_POSITION, position);

@@ -43,7 +43,8 @@ namespace PhysicsEngine
 		BoxStatic* box1;
 		Box* cargo;
 		Sphere* sphere1;
-		CompoundObject* comp;
+		Pallet* pallet1;
+		Pallet* pallet2;
 
 	public:
 		///A custom scene class
@@ -64,14 +65,21 @@ namespace PhysicsEngine
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
 			Add(plane);
 
-			box1 = new BoxStatic(PxTransform(PxVec3(-1.0f,.5f,.0f), PxQuat(-.3f, PxVec3(0.f, 0.f, 1.f))), PxVec3(2.f, .05f, 1.f));
-			box1->Color(color_palette[0]);
+			box1 = new BoxStatic(PxTransform(PxVec3(-1.0f,.7f,.0f), PxQuat(-.3f, PxVec3(0.f, 0.f, 1.f))), PxVec3(2.f, .05f, 1.f));
+			box1->Color(PxVec3(.6f, .6f, .6f));
 			Add(box1);
 
-			createDominos();
+			PxVec3 new_pos = PxVec3(1.2f, .1f, 0.f);
+			new_pos = createDominos1(new_pos, 0, 30, 0.f);
+			new_pos = createDominos1(new_pos, 0, 10, 0.2f);
 
-			comp = new CompoundObject(PxTransform(PxVec3(1.f, 3.f, -2.f)));
-			Add(comp);
+
+
+			pallet1 = new Pallet(PxTransform(PxVec3(1.f, 3.f, -3.f), PxQuat(.4f, PxVec3(0.f, 1.f, 0.f))));
+			pallet2 = new Pallet(PxTransform(PxVec3(1.f, 4.f, -3.f), PxQuat(.1f, PxVec3(0.f, 1.f, 0.f))));
+
+			Add(pallet1);
+			Add(pallet2);
 		}
 
 		//Custom udpate function
@@ -79,17 +87,41 @@ namespace PhysicsEngine
 		{
 		}
 
-		void createDominos() {
-			float x = 1.2f;
-			float y = .1f;
-			float z = 0.f;
-			for (int i = 0; i <= 100; i++) {
-				x = x + .1f;
-				//Domino* domino = new Domino(PxTransform(PxVec3(x, y, z), PxQuat(1.f, PxVec3(0.f, 0.1f, 0.f))));
-				Domino* domino = new Domino(PxTransform(PxVec3(x, y, z)));
-				domino->Color(PxVec3(0.f, 0.f, 0.f));
+		PxVec3 createDominos1(PxVec3 pos, float angle, int amount, float curve) {
+			for (int i = 0; i <= amount; i++) {
+				pos[0] = pos[0] + .1f; // modify new position
+				angle = angle + curve; // starting angle plus new curve
+				Domino* domino = new Domino(PxTransform(PxVec3(pos[0], pos[1], pos[2]), PxQuat(angle, PxVec3(0.f, 1.f, 0.f))));
+				//Domino* domino = new Domino(PxTransform(PxVec3(x, y, z)));
+				domino->Color(PxVec3(1.f, 0.f, 0.f)); // colour the domino red
 				Add(domino);
 			}
+			return PxVec3(pos[0], pos[1], pos[2]);
+		}
+		
+		PxVec3 createDominos(PxVec3 pos, int amount, string direction) {  // this function doesn't really work - can't work out how to calculate it
+			if (direction == "left")
+			{
+				//PxVec3 position_modifier = PxVec3(.1f, 0.f, 0.f);
+			}
+			else if (direction == "foreward")
+			{
+				PxVec3 position_modifier = PxVec3(.1f, 0.f, 0.f);
+			}
+			else if (direction == "right")
+			{
+				//PxVec3 position_modifier = PxVec3(.1f, 0.f, 0.f);
+			}
+		
+			for (int i = 0; i <= amount; i++) {
+				pos[0] = pos[0] + .1f; // modify new position
+				//angle = angle + curve; // starting angle plus new curve
+				//Domino* domino = new Domino(PxTransform(PxVec3(pos[0], pos[1], pos[2]), PxQuat(angle, PxVec3(0.f, 1.f, 0.f))));
+				//Domino* domino = new Domino(PxTransform(PxVec3(x, y, z)));
+				//domino->Color(PxVec3(1.f, 0.f, 0.f)); // colour the domino red
+				//Add(domino);
+			}
+			return PxVec3(pos[0], pos[1], pos[2]);
 		}
 
 		void beginShow() {
