@@ -318,6 +318,12 @@ namespace PhysicsEngine
 		return selected_actor;
 	}
 
+	PxRigidDynamic* Scene::GetActor(int index)
+	{
+		std::vector<PxRigidDynamic*> actors(px_scene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC)); // make buffer with size num of actors
+		return actors[index]; // get specific actor pointer from list of actor pointers
+	}
+
 	void Scene::SelectNextActor()
 	{
 #if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3

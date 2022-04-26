@@ -3,6 +3,8 @@
 #include "BasicActors.h"
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
+
 
 namespace PhysicsEngine
 {
@@ -65,13 +67,13 @@ namespace PhysicsEngine
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
 			Add(plane);
 
-			box1 = new BoxStatic(PxTransform(PxVec3(-1.0f,.7f,.0f), PxQuat(-.3f, PxVec3(0.f, 0.f, 1.f))), PxVec3(2.f, .05f, 1.f));
+			box1 = new BoxStatic(PxTransform(PxVec3(-.7f,1.f,.0f), PxQuat(-.5f, PxVec3(0.f, 0.f, 1.f))), PxVec3(2.f, .05f, 1.f));
 			box1->Color(PxVec3(.6f, .6f, .6f));
 			Add(box1);
 
 			PxVec3 new_pos = PxVec3(1.2f, .1f, 0.f);
-			new_pos = createDominos1(new_pos, 0, 30, 0.f);
-			new_pos = createDominos1(new_pos, 0, 10, 0.2f);
+			new_pos = createDominos(new_pos, 0, 50);
+			//new_pos = createDominos1(new_pos, 0, 10, 0.2f);
 
 
 
@@ -87,10 +89,9 @@ namespace PhysicsEngine
 		{
 		}
 
-		PxVec3 createDominos1(PxVec3 pos, float angle, int amount, float curve) {
+		PxVec3 createDominos(PxVec3 pos, float angle, int amount) {
 			for (int i = 0; i <= amount; i++) {
 				pos[0] = pos[0] + .1f; // modify new position
-				angle = angle + curve; // starting angle plus new curve
 				Domino* domino = new Domino(PxTransform(PxVec3(pos[0], pos[1], pos[2]), PxQuat(angle, PxVec3(0.f, 1.f, 0.f))));
 				//Domino* domino = new Domino(PxTransform(PxVec3(x, y, z)));
 				domino->Color(PxVec3(1.f, 0.f, 0.f)); // colour the domino red
@@ -99,59 +100,57 @@ namespace PhysicsEngine
 			return PxVec3(pos[0], pos[1], pos[2]);
 		}
 		
-		PxVec3 createDominos(PxVec3 pos, int amount, string direction) {  // this function doesn't really work - can't work out how to calculate it
-			if (direction == "left")
-			{
-				//PxVec3 position_modifier = PxVec3(.1f, 0.f, 0.f);
-			}
-			else if (direction == "foreward")
-			{
-				PxVec3 position_modifier = PxVec3(.1f, 0.f, 0.f);
-			}
-			else if (direction == "right")
-			{
-				//PxVec3 position_modifier = PxVec3(.1f, 0.f, 0.f);
-			}
-		
-			for (int i = 0; i <= amount; i++) {
-				pos[0] = pos[0] + .1f; // modify new position
-				//angle = angle + curve; // starting angle plus new curve
-				//Domino* domino = new Domino(PxTransform(PxVec3(pos[0], pos[1], pos[2]), PxQuat(angle, PxVec3(0.f, 1.f, 0.f))));
-				//Domino* domino = new Domino(PxTransform(PxVec3(x, y, z)));
-				//domino->Color(PxVec3(1.f, 0.f, 0.f)); // colour the domino red
-				//Add(domino);
-			}
-			return PxVec3(pos[0], pos[1], pos[2]);
-		}
+		//PxVec3 createDominos(PxVec3 pos, int amount, string direction) {  // this function doesn't really work - can't work out how to calculate it
+		//	if (direction == "left")
+		//	{
+		//		//PxVec3 position_modifier = PxVec3(.1f, 0.f, 0.f);
+		//	}
+		//	else if (direction == "foreward")
+		//	{
+		//		PxVec3 position_modifier = PxVec3(.1f, 0.f, 0.f);
+		//	}
+		//	else if (direction == "right")
+		//	{
+		//		//PxVec3 position_modifier = PxVec3(.1f, 0.f, 0.f);
+		//	}
+		//
+		//	for (int i = 0; i <= amount; i++) {
+		//		pos[0] = pos[0] + .1f; // modify new position
+		//		//angle = angle + curve; // starting angle plus new curve
+		//		//Domino* domino = new Domino(PxTransform(PxVec3(pos[0], pos[1], pos[2]), PxQuat(angle, PxVec3(0.f, 1.f, 0.f))));
+		//		//Domino* domino = new Domino(PxTransform(PxVec3(x, y, z)));
+		//		//domino->Color(PxVec3(1.f, 0.f, 0.f)); // colour the domino red
+		//		//Add(domino);
+		//	}
+		//	return PxVec3(pos[0], pos[1], pos[2]);
+		//} // TODO create bendy lines with dominos
 
 		void beginShow() {
+			// This begins the show by pushing a "pebble" (convex mesh) from atop a pile of grit.
+
 			float scale = 0.5f;
 			std::vector<PxVec3> pebble_desc{
-				PxVec3(.0f, .085f, .0f) * scale, // top most point
+				PxVec3(.0f, .07f, .0f) * scale, // top most point
 				PxVec3(.07f, .05f, .07f) * scale, // upper ring of points
 				PxVec3(.07f, .05f, -.07f)* scale,
 				PxVec3(-.07f, .05f, .07f)* scale,
 				PxVec3(-.07f, .05f, -.07f)* scale,
-				PxVec3(.1f, .0f, .1f)* scale, // center ring of points
-				PxVec3(.1f, .0f, -.1f) * scale,
-				PxVec3(-.1f, .0f, .1f) * scale,
-				PxVec3(-.1f, .0f, -.1f) * scale,
+				PxVec3(.1f, .1f, .1f)* scale, // upper middle ring of points
+				PxVec3(.1f, .1f, -.1f) * scale,
+				PxVec3(-.1f, .1f, .1f) * scale,
+				PxVec3(-.1f, .1f, -.1f) * scale,
+				PxVec3(.1f, -.1f, .1f)* scale, // lower middle ring of points
+				PxVec3(.1f, -.1f, -.1f) * scale,
+				PxVec3(-.1f, -.1f, .1f) * scale,
+				PxVec3(-.1f, -.1f, -.1f) * scale,
 				PxVec3(.07f, -.05f, .07f)* scale, //  lower ring of points
 				PxVec3(.07f, -.05f, -.07f)* scale,
 				PxVec3(-.07f, -.05f, .07f)* scale,
 				PxVec3(-.07f, -.05f, -.07f)* scale,
-				PxVec3(.0f, -.085f, .0f)* scale, // bottom most point
+				PxVec3(.0f, -.07f, .0f)* scale, // bottom most point
 			};
-			//pebble_desc = pebble_desc * 0.5f; // scale down
 			ConvexMesh* pebble = new ConvexMesh(pebble_desc, PxTransform(PxVec3(-1.f, 2.f, 0.f)), 1.f);
-
-			// sf concrete, df est. concrete, c.o.r est. based on glass marble (0.685)
-			//PxMaterial*const* pebble_material = PhysicsEngine::CreateMaterial(.3f, .1f, 0.685f);
-			//pebble->GetShape()->setMaterials(pebble_material);
-
-			//sphere1 = new Sphere(PxTransform(PxVec3(-1.f, 2.f, .0f)), .03f, .5f);
-			//sphere1->Color(PhysicsEngine::color_palette[1]);
-			pebble->Color(PxVec3(1.f, 0.f, 0.f));
+			pebble->Color(PxVec3(.75f, .75f, .75f));
 			Add(pebble);
 		}
 
