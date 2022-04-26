@@ -125,9 +125,34 @@ namespace PhysicsEngine
 		}
 
 		void beginShow() {
-			sphere1 = new Sphere(PxTransform(PxVec3(-1.f, 2.f, .0f)), .03f, .5f);
-			sphere1->Color(PhysicsEngine::color_palette[1]);
-			Add(sphere1);
+			float scale = 0.5f;
+			std::vector<PxVec3> pebble_desc{
+				PxVec3(.0f, .085f, .0f) * scale, // top most point
+				PxVec3(.07f, .05f, .07f) * scale, // upper ring of points
+				PxVec3(.07f, .05f, -.07f)* scale,
+				PxVec3(-.07f, .05f, .07f)* scale,
+				PxVec3(-.07f, .05f, -.07f)* scale,
+				PxVec3(.1f, .0f, .1f)* scale, // center ring of points
+				PxVec3(.1f, .0f, -.1f) * scale,
+				PxVec3(-.1f, .0f, .1f) * scale,
+				PxVec3(-.1f, .0f, -.1f) * scale,
+				PxVec3(.07f, -.05f, .07f)* scale, //  lower ring of points
+				PxVec3(.07f, -.05f, -.07f)* scale,
+				PxVec3(-.07f, -.05f, .07f)* scale,
+				PxVec3(-.07f, -.05f, -.07f)* scale,
+				PxVec3(.0f, -.085f, .0f)* scale, // bottom most point
+			};
+			//pebble_desc = pebble_desc * 0.5f; // scale down
+			ConvexMesh* pebble = new ConvexMesh(pebble_desc, PxTransform(PxVec3(-1.f, 2.f, 0.f)), 1.f);
+
+			// sf concrete, df est. concrete, c.o.r est. based on glass marble (0.685)
+			//PxMaterial*const* pebble_material = PhysicsEngine::CreateMaterial(.3f, .1f, 0.685f);
+			//pebble->GetShape()->setMaterials(pebble_material);
+
+			//sphere1 = new Sphere(PxTransform(PxVec3(-1.f, 2.f, .0f)), .03f, .5f);
+			//sphere1->Color(PhysicsEngine::color_palette[1]);
+			pebble->Color(PxVec3(1.f, 0.f, 0.f));
+			Add(pebble);
 		}
 
 		void ruinShow() {
