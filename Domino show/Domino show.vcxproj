@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actors.h" />
     <ClInclude Include="BasicActors.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="Extras\Camera.h" />
