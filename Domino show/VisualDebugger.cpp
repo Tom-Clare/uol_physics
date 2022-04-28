@@ -62,7 +62,7 @@ namespace VisualDebugger
 		Renderer::InitWindow(window_name, width, height);
 		Renderer::Init();
 
-		camera = new Camera(PxVec3(0.0f, 1.0f, 5.0f), PxVec3(0.f,-.1f,-1.f), 1.f); // final value is speed
+		camera = new Camera(PxVec3(0.0f, 10.0f, 30.0f), PxVec3(0.f,-.1f,-1.f), 2.f); // final value is speed
 
 		//initialise HUD
 		HUDInit();

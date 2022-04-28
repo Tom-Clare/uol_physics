@@ -394,4 +394,79 @@ namespace PhysicsEngine
 		for (unsigned int i = 0; i < shapes.size(); i++)
 			*((UserData*)shapes[i]->userData)->color = sactor_color_orig[i];
 	}
+
+	RevoluteJoint::RevoluteJoint(Actor* first_actor, const PxTransform& first_local_anchor, Actor* second_actor, const PxTransform& second_local_actor)
+	{
+		PxRigidActor* px_first_actor = 0;
+		if (first_actor)
+			px_first_actor = (PxRigidActor*)first_actor->Get(); // prepare var for func call
+
+		// by not doing the above check for the second actor, we allow the second actor to simply be some point in the world.
+
+		joint = PxRevoluteJointCreate(*GetPhysics(), px_first_actor, first_local_anchor, (PxRigidActor*)second_actor->Get(), second_local_actor);
+		joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true); // enable visulisation
+	};
+
+	void RevoluteJoint::DriveVelocity(PxReal vel)
+	{
+		//wake up the attached actors
+		PxRigidDynamic* first_actor, * second_actor;
+		((PxRevoluteJoint*)joint)->getActors((PxRigidActor*&)first_actor, (PxRigidActor*&)second_actor);
+		if (first_actor) // if first actor is valid
+		{
+			if (first_actor->isSleeping()) // and currently sleeping
+				first_actor->wakeUp(); // re-activate physics for object
+		}
+		if (second_actor) // is second actor is valid
+		{
+			if (second_actor->isSleeping()) // and currently sleeping
+				second_actor->wakeUp(); // re-activate physics for object
+		}
+		((PxRevoluteJoint*)joint)->setDriveVelocity(vel); // assign drive velocity
+		((PxRevoluteJoint*)joint)->setRevoluteJointFlag(PxRevoluteJointFlag::eDRIVE_ENABLED, true); // and enable drive capability
+	};
+
+	PxReal RevoluteJoint::DriveVelocity()
+	{
+		return ((PxRevoluteJoint*)joint)->getDriveVelocity();
+	};
+
+	void RevoluteJoint::SetLimits(PxReal low, PxReal high)
+	{
+		((PxRevoluteJoint*)joint)->setLimit(PxJointAngularLimitPair(low, high)); // set low and high bounds of mobility
+		((PxRevoluteJoint*)joint)->setRevoluteJointFlag(PxRevoluteJointFlag::eLIMIT_ENABLED, true); // and enable effects of the limits
+	};
+
+	Rope::Rope(Actor* actor0, const PxTransform& localFrame0, Actor* actor1, const PxTransform& localFrame1) : Joint()
+	{
+		PxRigidActor* px_actor0 = 0;
+		if (actor0)
+			px_actor0 = (PxRigidActor*)actor0->Get();
+
+		joint = (PxJoint*)PxDistanceJointCreate(*GetPhysics(), px_actor0, localFrame0, (PxRigidActor*)actor1->Get(), localFrame1);
+		joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
+		((PxDistanceJoint*)joint)->setDistanceJointFlag(PxDistanceJointFlag::eSPRING_ENABLED, true); // activate spring
+		Damping(100000.f);
+		Stiffness(10000.f);
+	};
+
+	void Rope::Stiffness(PxReal value)
+	{
+		((PxDistanceJoint*)joint)->setStiffness(value);
+	};
+
+	PxReal Rope::Stiffness()
+	{
+		return ((PxDistanceJoint*)joint)->getStiffness();
+	};
+
+	void Rope::Damping(PxReal value)
+	{
+		((PxDistanceJoint*)joint)->setDamping(value);
+	};
+
+	PxReal Rope::Damping()
+	{
+		return ((PxDistanceJoint*)joint)->getDamping();
+	};
 }

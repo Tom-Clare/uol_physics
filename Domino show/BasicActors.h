@@ -48,7 +48,7 @@ namespace PhysicsEngine
 		}
 	};
 
-	///Box (dynamic) class
+	///CargoContainer (dynamic) class
 	class CargoContainer : public DynamicActor
 	{
 	public:
@@ -56,12 +56,13 @@ namespace PhysicsEngine
 		// - pose in 0,0,0
 		// - dimensions: 1m x 1m x 1m
 		// - denisty: 1kg/m^3
-		CargoContainer(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(.5f, .5f, .5f), PxReal density = 1.f)
+		CargoContainer(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(6.096f, 2.59f, 2.43f), PxReal density = 1.f)
 			: DynamicActor(pose)
 		{
 			// sf steel, df steel, c.o.r est. based on hard wooden ball (0.605) - pallet is weathered, less resilient, and flatter.
-			PxMaterial* painted_metal = PhysicsEngine::CreateMaterial(.5f, .42f, 0.85f);
-			CreateShape(PxBoxGeometry(dimensions), density, painted_metal);
+			//PxMaterial* painted_metal = PhysicsEngine::CreateMaterial(.5f, .42f, 0.85f);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			//CreateShape(PxBoxGeometry(dimensions), density, painted_metal);
 		}
 	};
 
@@ -109,7 +110,7 @@ namespace PhysicsEngine
 		}
 
 		//mesh cooking (preparation)
-		PxConvexMesh* CookMesh(const PxConvexMeshDesc& mesh_desc)
+		static PxConvexMesh* CookMesh(const PxConvexMeshDesc& mesh_desc)
 		{
 			PxDefaultMemoryOutputStream stream;
 

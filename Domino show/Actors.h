@@ -55,13 +55,62 @@ namespace PhysicsEngine
 		}
 	};
 
-	/*class Crane : public DynamicActor
+	class Crane : public StaticActor
 	{
 	public:
 		Crane(const PxTransform& pose = PxTransform(PxIdentity))
-			: DynamicActor(pose)
+			: StaticActor(pose)
 		{
+			float scale = 1.f;
+			std::vector<PxVec3> leg = { // legs should be tall and wedge shaped
+				PxVec3(-1.f, 0.f, -1.f) * scale, // lower points (2mx2m)
+				PxVec3(-1.f, 0.f, 1.f) * scale,
+				PxVec3(1.f, 0.f, -1.f) * scale,
+				PxVec3(1.f, 0.f, 1.f) * scale,
+				PxVec3(-1.f, 40.f, -1.f) * scale, // upper points (40m high)
+				PxVec3(-1.f, 40.f, 1.f) * scale,
+				PxVec3(3.f, 40.f, -1.f) * scale,
+				PxVec3(3.f, 40.f, 1.f) * scale,
+			};
 
+			PxConvexMeshDesc mesh_desc;
+			mesh_desc.points.count = (PxU32)leg.size();
+			mesh_desc.points.stride = sizeof(PxVec3);
+			mesh_desc.points.data = &leg.front();
+			mesh_desc.flags = PxConvexFlag::eCOMPUTE_CONVEX;
+			mesh_desc.vertexLimit = 256;
+
+			PxShape* shape_placehold;
+
+			// create legs
+			CreateShape(PxConvexMeshGeometry(ConvexMesh::CookMesh(mesh_desc)), 1.f);
+			CreateShape(PxConvexMeshGeometry(ConvexMesh::CookMesh(mesh_desc)), 1.f);
+			CreateShape(PxConvexMeshGeometry(ConvexMesh::CookMesh(mesh_desc)), 1.f);
+			CreateShape(PxConvexMeshGeometry(ConvexMesh::CookMesh(mesh_desc)), 1.f);
+
+			// position legs
+			shape_placehold = GetShape(0); // far left
+			shape_placehold->setLocalPose(PxTransform(PxVec3(-20.f, 0.f, -10.f)));
+
+			shape_placehold = GetShape(1); // close left
+			shape_placehold->setLocalPose(PxTransform(PxVec3(-20.f, 0.f, 10.f)));
+
+			shape_placehold = GetShape(2); // far right
+			shape_placehold->setLocalPose(PxTransform(PxVec3(20.f, 0.f, -10.f)));
+
+			shape_placehold = GetShape(3); // close right
+			shape_placehold->setLocalPose(PxTransform(PxVec3(20.f, 0.f, 10.f)));
+
+			// create top
+			PxVec3 top = PxVec3(23.f, 2.f, 10.f);
+			CreateShape(PxBoxGeometry(top), 1.f);
+			shape_placehold = GetShape(4);
+			shape_placehold->setLocalPose(PxTransform(PxVec3(1.f, 41.f, 0.f)));
+
+			// make it industrial orange!
+			this->Color(PxVec3(255.f / 255.f, 158.f / 255.f, 3.f / 255.f));
 		}
-	};*/
+	};
+
+
 }

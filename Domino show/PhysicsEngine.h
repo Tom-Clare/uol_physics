@@ -145,4 +145,41 @@ namespace PhysicsEngine
 		///a list with all actors
 		std::vector<PxActor*> GetAllActors();
 	};
+
+	///Generic Joint class, simple wrapper for PxJoint
+	class Joint
+	{
+	protected:
+		PxJoint* joint;
+
+	public:
+		Joint() : joint(0) {}
+
+		PxJoint* Get() { return joint; }
+	};
+
+	class RevoluteJoint : public Joint
+	{
+		RevoluteJoint(Actor*, const PxTransform&, Actor*, const PxTransform&);
+
+		void DriveVelocity(PxReal);
+
+		PxReal DriveVelocity();
+
+		void SetLimits(PxReal, PxReal);
+	};
+
+	class Rope : public Joint
+	{
+	public:
+		Rope(Actor*, const PxTransform&, Actor*, const PxTransform&);
+
+		void Stiffness(PxReal);
+
+		PxReal Stiffness();
+
+		void Damping(PxReal);
+
+		PxReal Damping();
+	};
 }

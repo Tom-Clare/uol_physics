@@ -2,6 +2,7 @@
 
 #include "BasicActors.h"
 #include "Actors.h"
+#include "PhysicsEngine.h"
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
@@ -44,10 +45,13 @@ namespace PhysicsEngine
 	{
 		Plane* plane;
 		BoxStatic* box1;
-		Box* cargo;
+		CargoContainer* cargo;
+		PxVec3 cargo_shape;
+		Rope* rope;
 		Sphere* sphere1;
 		Pallet* pallet1;
 		Pallet* pallet2;
+		Crane* crane;
 
 	public:
 		///A custom scene class
@@ -76,7 +80,17 @@ namespace PhysicsEngine
 			new_pos = createDominos(new_pos, 0, 50);
 			//new_pos = createDominos1(new_pos, 0, 10, 0.2f);
 
+			crane = new Crane();
+			Add(crane);
 
+			// size of cargo container
+			cargo_shape = PxVec3(6.096f, 2.59f, 2.43f);
+
+			// attach cargo box to crane
+			//CargoContainer* cargo2 = new CargoContainer(PxTransform(PxVec3(0.f, 20.f, 0.f)));
+			Box* cargo3 = new Box(PxTransform(PxVec3(0.f, 30.f, 0.f)), cargo_shape);
+			Rope* rope = new Rope(crane, PxTransform(PxVec3(0.f, 30.f, 0.f)), cargo3, PxTransform(PxVec3(0.f, 0.f, 0.f)));
+			Add(cargo3);
 
 			pallet1 = new Pallet(PxTransform(PxVec3(1.f, 3.f, -3.f), PxQuat(.4f, PxVec3(0.f, 1.f, 0.f))));
 			pallet2 = new Pallet(PxTransform(PxVec3(1.f, 4.f, -3.f), PxQuat(.1f, PxVec3(0.f, 1.f, 0.f))));
@@ -156,7 +170,7 @@ namespace PhysicsEngine
 		}
 
 		void ruinShow() {
-			cargo = new Box(PxTransform(PxVec3(5.f, 10.f, 0.f)), PxVec3(6.096f, 2.59f, 2.43f)); // 20ft x 8ft6 x 8ft
+			cargo = new CargoContainer(PxTransform(PxVec3(5.f, 10.f, 0.f))); // 20ft x 8ft6 x 8ft
 			cargo->Color(PxVec3(0.f, 0.3f, 0.5f)); // murky blue
 			Add(cargo);
 		}
