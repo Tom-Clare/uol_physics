@@ -184,21 +184,8 @@ namespace PhysicsEngine
 		}
 
 		void ruinShow() {
-			//cargo = new CargoContainer(PxTransform(PxVec3(5.f, 10.f, 0.f))); // 20ft x 8ft6 x 8ft
-			//cargo->Color(PxVec3(0.f, 0.3f, 0.5f)); // murky blue
-			//Add(cargo);
-
-			rope->Get();
-			rope->Weakify();
-			cargo3->Prod();
-			/*PxReal min;
-			PxReal max;
-			rope->getBreakForce(min, max);
-			cout << min;
-			cout << max;
-
-			bool broken = (rope->getConstraintFlags() & PxConstraintFlag::eBROKEN) != 0;*/
-
+			rope->Weakify(); // weaken the rop so it snaps instantly
+			cargo3->Wake(); // waken the cargo box and cause it to realise it needs to fall
 		}
 	};
 }

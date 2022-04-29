@@ -46,12 +46,6 @@ namespace PhysicsEngine
 		{ 
 			CreateShape(PxBoxGeometry(dimensions), density);
 		}
-
-		void Prod()
-		{
-			// wake actor
-			Wake();
-		}
 	};
 
 	///CargoContainer (dynamic) class
