@@ -223,6 +223,11 @@ namespace PhysicsEngine
 #endif
 	}
 
+	void DynamicActor::Wake()
+	{
+		((PxRigidDynamic*)actor)->wakeUp();
+	}
+
 	StaticActor::StaticActor(const PxTransform& pose)
 	{
 		actor = (PxActor*)GetPhysics()->createRigidStatic(pose);
@@ -290,6 +295,11 @@ namespace PhysicsEngine
 	void Scene::Add(Actor* actor)
 	{
 		px_scene->addActor(*actor->Get());
+	}
+
+	void Scene::Remove(Actor* actor)
+	{
+		px_scene->removeActor(*actor->Get());
 	}
 
 	PxScene* Scene::Get() 
@@ -437,7 +447,10 @@ namespace PhysicsEngine
 		((PxRevoluteJoint*)joint)->setRevoluteJointFlag(PxRevoluteJointFlag::eLIMIT_ENABLED, true); // and enable effects of the limits
 	};
 
-	Rope::Rope(Actor* actor0, const PxTransform& localFrame0, Actor* actor1, const PxTransform& localFrame1) : Joint()
+
+
+	
+	DistanceJoint::DistanceJoint(Actor* actor0, const PxTransform& localFrame0, Actor* actor1, const PxTransform& localFrame1)
 	{
 		PxRigidActor* px_actor0 = 0;
 		if (actor0)
@@ -445,28 +458,35 @@ namespace PhysicsEngine
 
 		joint = (PxJoint*)PxDistanceJointCreate(*GetPhysics(), px_actor0, localFrame0, (PxRigidActor*)actor1->Get(), localFrame1);
 		joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
-		((PxDistanceJoint*)joint)->setDistanceJointFlag(PxDistanceJointFlag::eSPRING_ENABLED, true); // activate spring
-		Damping(100000.f);
-		Stiffness(10000.f);
-	};
+		((PxDistanceJoint*)joint)->setDistanceJointFlag(PxDistanceJointFlag::eSPRING_ENABLED, true);
+		Damping(1.f);
+		Stiffness(1.f);
+	}
 
-	void Rope::Stiffness(PxReal value)
+	void DistanceJoint::Stiffness(PxReal value)
 	{
 		((PxDistanceJoint*)joint)->setStiffness(value);
-	};
+	}
 
-	PxReal Rope::Stiffness()
+	PxReal DistanceJoint::Stiffness()
 	{
 		return ((PxDistanceJoint*)joint)->getStiffness();
-	};
+	}
 
-	void Rope::Damping(PxReal value)
+	void DistanceJoint::Damping(PxReal value)
 	{
 		((PxDistanceJoint*)joint)->setDamping(value);
-	};
+	}
 
-	PxReal Rope::Damping()
+	PxReal DistanceJoint::Damping()
 	{
 		return ((PxDistanceJoint*)joint)->getDamping();
-	};
+	}
+
+	void RevoluteJoint::Weakify()
+	{
+		// make rope so weak it breaks instantly
+		PxJoint* ref = ((Joint*)this)->Get();
+		ref->setBreakForce(0, 0);
+	}
 }

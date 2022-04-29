@@ -3,6 +3,7 @@
 #include "BasicActors.h"
 #include "Actors.h"
 #include "PhysicsEngine.h"
+#include "PxSimulationEventCallback.h"
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
@@ -43,17 +44,22 @@ namespace PhysicsEngine
 	///Custom scene class
 	class MyScene : public Scene
 	{
+	private:
 		Plane* plane;
 		BoxStatic* box1;
 		CargoContainer* cargo;
 		PxVec3 cargo_shape;
-		Rope* rope;
+		RevoluteJoint* rope;
 		Sphere* sphere1;
 		Pallet* pallet1;
 		Pallet* pallet2;
 		Crane* crane;
+		Box* cargo3;
+		
 
 	public:
+		MySimulationEventCallback* my_callback;
+
 		///A custom scene class
 		void SetVisualisation()
 		{
@@ -67,6 +73,11 @@ namespace PhysicsEngine
 			SetVisualisation();			
 
 			GetMaterial()->setDynamicFriction(.2f);
+
+
+			///Initialise and set the customised event callback
+			my_callback = new MySimulationEventCallback();
+			px_scene->setSimulationEventCallback(my_callback);
 
 			plane = new Plane();
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
@@ -88,9 +99,12 @@ namespace PhysicsEngine
 
 			// attach cargo box to crane
 			//CargoContainer* cargo2 = new CargoContainer(PxTransform(PxVec3(0.f, 20.f, 0.f)));
-			Box* cargo3 = new Box(PxTransform(PxVec3(0.f, 30.f, 0.f)), cargo_shape);
-			Rope* rope = new Rope(crane, PxTransform(PxVec3(0.f, 30.f, 0.f)), cargo3, PxTransform(PxVec3(0.f, 0.f, 0.f)));
+			cargo3 = new Box(PxTransform(PxVec3(0.f, 30.f, 0.f)), cargo_shape);
+			cargo3->Color(PxVec3(0.f, 0.3f, 0.5f));
+			this->rope = new RevoluteJoint(crane, PxTransform(PxVec3(0.f, 30.f, 0.f)), cargo3, PxTransform(PxVec3(0.f, 0.f, 0.f)));
 			Add(cargo3);
+
+			//((PxJoint*)rope)->release();
 
 			pallet1 = new Pallet(PxTransform(PxVec3(1.f, 3.f, -3.f), PxQuat(.4f, PxVec3(0.f, 1.f, 0.f))));
 			pallet2 = new Pallet(PxTransform(PxVec3(1.f, 4.f, -3.f), PxQuat(.1f, PxVec3(0.f, 1.f, 0.f))));
@@ -170,9 +184,21 @@ namespace PhysicsEngine
 		}
 
 		void ruinShow() {
-			cargo = new CargoContainer(PxTransform(PxVec3(5.f, 10.f, 0.f))); // 20ft x 8ft6 x 8ft
-			cargo->Color(PxVec3(0.f, 0.3f, 0.5f)); // murky blue
-			Add(cargo);
+			//cargo = new CargoContainer(PxTransform(PxVec3(5.f, 10.f, 0.f))); // 20ft x 8ft6 x 8ft
+			//cargo->Color(PxVec3(0.f, 0.3f, 0.5f)); // murky blue
+			//Add(cargo);
+
+			rope->Get();
+			rope->Weakify();
+			cargo3->Prod();
+			/*PxReal min;
+			PxReal max;
+			rope->getBreakForce(min, max);
+			cout << min;
+			cout << max;
+
+			bool broken = (rope->getConstraintFlags() & PxConstraintFlag::eBROKEN) != 0;*/
+
 		}
 	};
 }
