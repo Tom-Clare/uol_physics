@@ -46,19 +46,21 @@ namespace PhysicsEngine
 	{
 	private:
 		Plane* plane;
-		BoxStatic* box1;
-		CargoContainer* cargo;
+		Box* plank;
+		Box* cargo;
 		PxVec3 cargo_shape;
-		RevoluteJoint* rope;
+		DistanceJoint* rope;
 		Sphere* sphere1;
 		Pallet* pallet1;
 		Pallet* pallet2;
-		Crane* crane;
 		Box* cargo3;
+		Crane* crane;
+		Box* crate;
 		
 
 	public:
 		MySimulationEventCallback* my_callback;
+		int num_domino = 50;
 
 		///A custom scene class
 		void SetVisualisation()
@@ -74,6 +76,10 @@ namespace PhysicsEngine
 
 			GetMaterial()->setDynamicFriction(.2f);
 
+			// Initialise some standard vars
+			cargo_shape = PxVec3(6.096f, 2.59f, 2.43f);
+
+			PxVec3 col_cardboard = PxVec3(194.f / 255.f, 172.f / 255.f, 122.f / 255.f); // pale grey-brown
 
 			///Initialise and set the customised event callback
 			my_callback = new MySimulationEventCallback();
@@ -83,31 +89,34 @@ namespace PhysicsEngine
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
 			Add(plane);
 
-			box1 = new BoxStatic(PxTransform(PxVec3(-.7f,1.f,.0f), PxQuat(-.5f, PxVec3(0.f, 0.f, 1.f))), PxVec3(2.f, .05f, 1.f));
-			box1->Color(PxVec3(.6f, .6f, .6f));
-			Add(box1);
+			crate = new Box(PxTransform(PxVec3(-7.f, 6.f, 0.f)), PxVec3(1.f, 0.8f, 1.f));
+			crate->Color(col_cardboard);
+			Add(crate);
 
-			PxVec3 new_pos = PxVec3(1.2f, .1f, 0.f);
-			new_pos = createDominos(new_pos, 0, 50);
+			plank = new Box(PxTransform(PxVec3(-5.2f,7.f,.0f), PxQuat(-.6f, PxVec3(0.f, 0.f, 1.f))), PxVec3(2.f, .05f, 1.f));
+			plank->Color(PxVec3(230.f / 255.f, 226.f / 255.f, 160.f / 255.f));
+			Add(plank);
+
+			cargo = new Box(PxTransform(PxVec3(-2.f, 2.6f, 0.f)), cargo_shape, 0.05);
+			cargo->Color(PxVec3(199.f / 255.f, 73.f / 255.f, 0.f / 255.f));
+			Add(cargo);
+
+			PxVec3 new_pos = PxVec3(-3.2f, 5.42f, 0.f);
+			new_pos = createDominos(new_pos, 0, num_domino);
 			//new_pos = createDominos1(new_pos, 0, 10, 0.2f);
 
 			crane = new Crane();
 			Add(crane);
 
-			// size of cargo container
-			cargo_shape = PxVec3(6.096f, 2.59f, 2.43f);
-
 			// attach cargo box to crane
 			//CargoContainer* cargo2 = new CargoContainer(PxTransform(PxVec3(0.f, 20.f, 0.f)));
-			cargo3 = new Box(PxTransform(PxVec3(0.f, 30.f, 0.f)), cargo_shape);
+			cargo3 = new Box(PxTransform(PxVec3(0.f, 30.f, 0.f)), cargo_shape, 0.05);
 			cargo3->Color(PxVec3(0.f, 0.3f, 0.5f));
-			this->rope = new RevoluteJoint(crane, PxTransform(PxVec3(0.f, 30.f, 0.f)), cargo3, PxTransform(PxVec3(0.f, 0.f, 0.f)));
+			this->rope = new DistanceJoint(crane, PxTransform(PxVec3(0.f, 40.f, 0.f)), cargo3, PxTransform(PxVec3(0.f, 10.f, 0.f)));
 			Add(cargo3);
 
-			//((PxJoint*)rope)->release();
-
-			pallet1 = new Pallet(PxTransform(PxVec3(1.f, 3.f, -3.f), PxQuat(.4f, PxVec3(0.f, 1.f, 0.f))));
-			pallet2 = new Pallet(PxTransform(PxVec3(1.f, 4.f, -3.f), PxQuat(.1f, PxVec3(0.f, 1.f, 0.f))));
+			pallet1 = new Pallet(PxTransform(PxVec3(1.f, 1.f, 4.f), PxQuat(.4f, PxVec3(0.f, 1.f, 0.f))));
+			pallet2 = new Pallet(PxTransform(PxVec3(1.f, 2.f, 4.f), PxQuat(.1f, PxVec3(0.f, 1.f, 0.f))));
 
 			Add(pallet1);
 			Add(pallet2);
@@ -123,7 +132,7 @@ namespace PhysicsEngine
 				pos[0] = pos[0] + .1f; // modify new position
 				Domino* domino = new Domino(PxTransform(PxVec3(pos[0], pos[1], pos[2]), PxQuat(angle, PxVec3(0.f, 1.f, 0.f))));
 				//Domino* domino = new Domino(PxTransform(PxVec3(x, y, z)));
-				domino->Color(PxVec3(1.f, 0.f, 0.f)); // colour the domino red
+				domino->Color(PxVec3(.0f, 0.f, 1.f)); // colour the domino red
 				Add(domino);
 			}
 			return PxVec3(pos[0], pos[1], pos[2]);
@@ -157,28 +166,28 @@ namespace PhysicsEngine
 		void beginShow() {
 			// This begins the show by pushing a "pebble" (convex mesh) from atop a pile of grit.
 
-			float scale = 0.5f;
+			float scale = .1f;
 			std::vector<PxVec3> pebble_desc{
-				PxVec3(.0f, .07f, .0f) * scale, // top most point
-				PxVec3(.07f, .05f, .07f) * scale, // upper ring of points
-				PxVec3(.07f, .05f, -.07f)* scale,
-				PxVec3(-.07f, .05f, .07f)* scale,
-				PxVec3(-.07f, .05f, -.07f)* scale,
-				PxVec3(.1f, .1f, .1f)* scale, // upper middle ring of points
-				PxVec3(.1f, .1f, -.1f) * scale,
-				PxVec3(-.1f, .1f, .1f) * scale,
-				PxVec3(-.1f, .1f, -.1f) * scale,
-				PxVec3(.1f, -.1f, .1f)* scale, // lower middle ring of points
-				PxVec3(.1f, -.1f, -.1f) * scale,
-				PxVec3(-.1f, -.1f, .1f) * scale,
-				PxVec3(-.1f, -.1f, -.1f) * scale,
-				PxVec3(.07f, -.05f, .07f)* scale, //  lower ring of points
-				PxVec3(.07f, -.05f, -.07f)* scale,
-				PxVec3(-.07f, -.05f, .07f)* scale,
-				PxVec3(-.07f, -.05f, -.07f)* scale,
-				PxVec3(.0f, -.07f, .0f)* scale, // bottom most point
+				PxVec3(.0f, .9f, .0f) * scale, // top most point
+				PxVec3(.7f, .5f, .7f) * scale, // upper ring of points
+				PxVec3(.7f, .5f, -.7f)* scale,
+				PxVec3(-.7f, .5f, .7f)* scale,
+				PxVec3(-.7f, .5f, -.7f)* scale,
+				PxVec3(1.f, .1f, 1.f)* scale, // upper middle ring of points
+				PxVec3(1.f, .1f, -1.f) * scale,
+				PxVec3(-1.f, .1f, 1.f) * scale,
+				PxVec3(-1.f, .1f, -1.f) * scale,
+				PxVec3(1.f, -.1f, 1.f)* scale, // lower middle ring of points
+				PxVec3(1.f, -.1f, -1.f) * scale,
+				PxVec3(-1.f, -.1f, 1.f) * scale,
+				PxVec3(-1.f, -.1f, -1.f) * scale,
+				PxVec3(.7f, -.5f, .7f)* scale, //  lower ring of points
+				PxVec3(.7f, -.5f, -.7f)* scale,
+				PxVec3(-.7f, -.5f, .7f)* scale,
+				PxVec3(-.7f, -.5f, -.7f)* scale,
+				PxVec3(.0f, -.9f, .0f)* scale, // bottom most point
 			};
-			ConvexMesh* pebble = new ConvexMesh(pebble_desc, PxTransform(PxVec3(-1.f, 2.f, 0.f)), 1.f);
+			ConvexMesh* pebble = new ConvexMesh(pebble_desc, PxTransform(PxVec3(-6.5f, 8.f, 0.f)), 1.f);
 			pebble->Color(PxVec3(.75f, .75f, .75f));
 			Add(pebble);
 		}

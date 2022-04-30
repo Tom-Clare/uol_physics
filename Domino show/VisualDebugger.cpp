@@ -41,7 +41,7 @@ namespace VisualDebugger
 	Camera* camera;
 	PhysicsEngine::MyScene* scene;
 	PxReal delta_time = 1.f/60.f;
-	PxReal gForceStrength = 0.0005;
+	PxReal gForceStrength = 100;
 	RenderMode render_mode = NORMAL;
 	const int MAX_KEYS = 256;
 	bool key_state[MAX_KEYS];
@@ -62,7 +62,7 @@ namespace VisualDebugger
 		Renderer::InitWindow(window_name, width, height);
 		Renderer::Init();
 
-		camera = new Camera(PxVec3(0.0f, 10.0f, 30.0f), PxVec3(0.f,-.1f,-1.f), 2.f); // final value is speed
+		camera = new Camera(PxVec3(-2.0f, 7.0f, 10.0f), PxVec3(0.f,-.1f,-1.f), 2.f); // final value is speed
 
 		//initialise HUD
 		HUDInit();
@@ -245,26 +245,26 @@ namespace VisualDebugger
 
 		switch (toupper(key))
 		{
-			// Force controls on the selected actor
-		//case 'I': //forward
-		//	scene->GetSelectedActor()->addForce(PxVec3(0,0,-1)*gForceStrength);
-		//	break;
-		//case 'K': //backward
-		//	scene->GetSelectedActor()->addForce(PxVec3(0,0,1)*gForceStrength);
-		//	break;
-		//case 'J': //left
-		//	scene->GetSelectedActor()->addForce(PxVec3(-1,0,0)*gForceStrength);
-		//	break;
-		//case 'L': //right
-		//	scene->GetSelectedActor()->addForce(PxVec3(1,0,0)*gForceStrength);  ////// We don't want to apply forces to any actors.
-		//	break;
-		//case 'U': //up
-		//	scene->GetSelectedActor()->addForce(PxVec3(0,1,0)*gForceStrength);  ////// TODO maybe delete all of these that we don't need!
-		//	break;
-		//case 'M': //down
-		//	scene->GetSelectedActor()->addForce(PxVec3(0,-1,0)*gForceStrength);
-		//	break;
-		//case 'P':
+			 //Force controls on the selected actor
+		case 'I': //forward
+			scene->GetSelectedActor()->addForce(PxVec3(0, 0, -1) * gForceStrength);
+			break;
+		case 'K': //backward
+			scene->GetSelectedActor()->addForce(PxVec3(0,0,1)*gForceStrength);
+			break;
+		case 'J': //left
+			scene->GetSelectedActor()->addForce(PxVec3(-1,0,0)*gForceStrength);
+			break;
+		case 'L': //right
+			scene->GetSelectedActor()->addForce(PxVec3(1,0,0)*gForceStrength);  ////// We don't want to apply forces to any actors.
+			break;
+		case 'U': //up
+			scene->GetSelectedActor()->addForce(PxVec3(0,1,0)*gForceStrength);  ////// TODO maybe delete all of these that we don't need!
+			break;
+		case 'M': //down
+			scene->GetSelectedActor()->addForce(PxVec3(0,-1,0)*gForceStrength);
+			break;
+		case 'P':
 		//	scene->SelectNextActor();
 		//	scene->GetSelectedActor()->addForce(PxVec3(0, -1, 0) * gForceStrength);
 		default:

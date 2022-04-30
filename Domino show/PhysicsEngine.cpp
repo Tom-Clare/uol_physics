@@ -228,6 +228,11 @@ namespace PhysicsEngine
 		((PxRigidDynamic*)actor)->wakeUp();
 	}
 
+	/*void DynamicActor::addForce(PxVec3 direction)
+	{
+		((PxRigidBody*)actor)->addForce
+	}*/
+
 	StaticActor::StaticActor(const PxTransform& pose)
 	{
 		actor = (PxActor*)GetPhysics()->createRigidStatic(pose);
@@ -346,7 +351,7 @@ namespace PhysicsEngine
 		{
 			if (selected_actor)
 			{
-				for (unsigned int i = 0; i < actors.size(); i++)
+				for (unsigned int i = 53; i < actors.size(); i++)
 					if (selected_actor == actors[i])
 					{
 						HighlightOff(selected_actor);
@@ -357,7 +362,7 @@ namespace PhysicsEngine
 			}
 			else
 			{
-				selected_actor = actors[0];
+				selected_actor = actors[54];
 			}
 			HighlightOn(selected_actor);
 		}
@@ -391,7 +396,7 @@ namespace PhysicsEngine
 		{
 			PxVec3* color = ((UserData*)shapes[i]->userData)->color;
 			sactor_color_orig.push_back(*color);
-			//*color += PxVec3(.2f,.2f,.2f); // TODO get rid of this
+			*color += PxVec3(1.f,1.f,1.f); // TODO get rid of this
 		}
 	}
 
@@ -448,6 +453,26 @@ namespace PhysicsEngine
 	};
 
 	void RevoluteJoint::Weakify()
+	{
+		// make rope so weak it breaks instantly
+		PxJoint* ref = ((Joint*)this)->Get();
+		ref->setBreakForce(0, 0);
+	}
+
+
+	DistanceJoint::DistanceJoint(Actor* first_actor, const PxTransform& first_local_anchor, Actor* second_actor, const PxTransform& second_local_actor)
+	{
+		PxRigidActor* px_first_actor = 0;
+		if (first_actor)
+			px_first_actor = (PxRigidActor*)first_actor->Get(); // prepare var for func call
+
+		// by not doing the above check for the second actor, we allow the second actor to simply be some point in the world.
+
+		joint = PxDistanceJointCreate(*GetPhysics(), px_first_actor, first_local_anchor, (PxRigidActor*)second_actor->Get(), second_local_actor);
+		joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true); // enable visulisation
+	};
+
+	void DistanceJoint::Weakify()
 	{
 		// make rope so weak it breaks instantly
 		PxJoint* ref = ((Joint*)this)->Get();

@@ -181,14 +181,6 @@ namespace PhysicsEngine
 	public:
 		DistanceJoint(Actor*, const PxTransform&, Actor*, const PxTransform&);
 
-		void Stiffness(PxReal);
-
-		PxReal Stiffness();
-
-		void Damping(PxReal);
-
-		PxReal Damping();
-
 		void Weakify();
 	};
 

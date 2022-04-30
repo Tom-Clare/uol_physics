@@ -55,11 +55,11 @@ namespace PhysicsEngine
 		}
 	};
 
-	class Crane : public StaticActor
+	class Crane : public DynamicActor
 	{
 	public:
 		Crane(const PxTransform& pose = PxTransform(PxIdentity))
-			: StaticActor(pose)
+			: DynamicActor(pose)
 		{
 			float scale = 1.f;
 			std::vector<PxVec3> leg = { // legs should be tall and wedge shaped
@@ -67,6 +67,8 @@ namespace PhysicsEngine
 				PxVec3(-1.f, 0.f, 1.f) * scale,
 				PxVec3(1.f, 0.f, -1.f) * scale,
 				PxVec3(1.f, 0.f, 1.f) * scale,
+				PxVec3(2.f, 4.f, -1.f) * scale, // lower ridge
+				PxVec3(2.f, 4.f, 1.f) * scale,
 				PxVec3(-1.f, 40.f, -1.f) * scale, // upper points (40m high)
 				PxVec3(-1.f, 40.f, 1.f) * scale,
 				PxVec3(3.f, 40.f, -1.f) * scale,
