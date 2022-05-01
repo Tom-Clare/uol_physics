@@ -56,7 +56,12 @@ namespace PhysicsEngine
 		Box* cargo3;
 		Crane* crane;
 		Box* crate;
-		
+		Stand* windmill_stand;
+		Fans* windmill_fans;
+		Fan* windmill_fan;
+		Fan* windmill_fan2;
+		RevoluteJoint* windmill_connection;
+		RevoluteJoint* windmill_connection2;
 
 	public:
 		MySimulationEventCallback* my_callback;
@@ -120,6 +125,19 @@ namespace PhysicsEngine
 
 			Add(pallet1);
 			Add(pallet2);
+
+			//windmill_stand = new Stand(PxTransform(PxVec3(10.f, 1.5f, 0.f), PxQuat(1.5807f, PxVec3(0.f, 1.f, 0.f))));
+			//Add(windmill_stand);
+			//windmill_fan = new Fan(PxTransform(PxVec3(10.f, 3.f, 0.f), PxQuat(1.5807f, PxVec3(0.f, 1.f, 0.f))));
+			//Add(windmill_fan);
+			//windmill_fan2 = new Fan(PxTransform(PxVec3(10.f, 3.f, 0.f), PxQuat(1.5807f, PxVec3(0.f, 1.f, 0.f))));
+			//Add(windmill_fan2);
+			////PxQuat(1.5807f, PxVec3(0.f, 1.f, 0.f))
+			//windmill_connection = new RevoluteJoint(nullptr, PxTransform(PxVec3(10.f, 1.5f, 0.f)), windmill_fan, PxTransform(PxVec3(0.f, 2.5f, 0.f), PxQuat(1.5807f, PxVec3(0.f, 1.f, 0.f))));
+			//windmill_connection->DriveVelocity(.2f);
+			//windmill_connection2 = new RevoluteJoint(windmill_stand, PxTransform(PxVec3(0.f, 3.f, 0.f), PxQuat(1.5807f, PxVec3(0.f, 1.f, 0.f))), windmill_fan2, PxTransform(PxVec3(0.f, 4.5f, 0.f), PxQuat(1.5807f, PxVec3(0.f, 1.f, 0.f))));
+			//windmill_connection2->DriveVelocity(.2f);
+
 		}
 
 		//Custom udpate function

@@ -114,5 +114,97 @@ namespace PhysicsEngine
 		}
 	};
 
+	class Stand : public StaticActor
+	{
+	public:
+		Stand(const PxTransform& pose = PxTransform(PxIdentity))
+			: StaticActor(pose)
+		{
+			PxShape* shape;
+			std::vector<PxVec3> legs_pos = {
+				PxVec3(-0.5f, 1.f, 0.5f),
+				PxVec3(0.5f, 1.f, 0.5f),
+				PxVec3(-0.5f, 1.f, -0.5f),
+				PxVec3(0.5f, 1.f, -0.5f)
+			};
+
+			// create legs
+			PxVec3 leg_shape = PxVec3(1.f, 0.01f, 0.025f);
+			for (int i = 0; i < 4; i++) {
+				CreateShape(PxBoxGeometry(leg_shape));
+				shape = GetShape(i);
+				shape->setLocalPose(PxTransform(legs_pos[i], PxQuat(-1.5708f, PxVec3(0.f, 0.f, 1.f))));
+			}
+
+			// connect legs
+			PxVec3 connector = PxVec3(.275f, 0.01f, 0.025f);
+
+			// connect front legs
+			CreateShape(PxBoxGeometry(connector));
+			shape = GetShape(4);
+			shape->setLocalPose(PxTransform(PxVec3(0.f, 1.5f, 0.25f)));
+
+			// connect rear legs
+			CreateShape(PxBoxGeometry(connector));
+			shape = GetShape(5);
+			shape->setLocalPose(PxTransform(PxVec3(0.f, 1.5f, -0.25f)));
+			
+			// connect each set of legs
+			//CreateShape(PxBoxGeometry(connector), 1.f);
+			//shape = GetShape(6);
+			//shape->setLocalPose(PxTransform(PxVec3(0.f, 3.f, 0.f), PxQuat(1.5708f, PxVec3(0.f, 1.f, 0.f))));
+
+			// join fans to connector
+
+			// apply drive
+		}
+	};
+
+	class Fan : public DynamicActor
+	{
+	public:
+		Fan(const PxTransform& pose = PxTransform(PxIdentity))
+			: DynamicActor(pose)
+		{
+			// create fans
+			PxVec3 fan_shape = PxVec3(1.f, 0.02f, 0.2f);
+			std::vector<PxVec3> fans_pos = {
+				PxVec3(0.f, 3.5f, 0.f), // top blade
+				PxVec3(0.5f, 3.f, 0.f), // right blade
+				PxVec3(0.f, 2.5f, 0.f), // bottom blade
+				PxVec3(-0.5f, 3.f, 0.f) // left blade
+			};
+
+			PxShape* shape;
+			CreateShape(PxBoxGeometry(fan_shape), 1.f);
+			shape = GetShape(0);
+			shape->setLocalPose(PxTransform(fans_pos[0], PxQuat((1.5708f), PxVec3(0.f, 0.f, 1.f))));
+		}
+	};
+
+	class Fans : public DynamicActor
+	{
+	public:
+		Fans(const PxTransform& pose = PxTransform(PxIdentity))
+			: DynamicActor(pose)
+		{
+			// create fans
+			PxVec3 fan_shape = PxVec3(1.f, 0.02f, 0.2f);
+			std::vector<PxVec3> fans_pos = {
+				PxVec3(0.f, 3.5f, 0.f), // top blade
+				PxVec3(0.5f, 3.f, 0.f), // right blade
+				PxVec3(0.f, 2.5f, 0.f), // bottom blade
+				PxVec3(-0.5f, 3.f, 0.f) // left blade
+			};
+
+			PxShape* shape;
+			for (int i = 0; i < 4; i++)
+			{
+				CreateShape(PxBoxGeometry(fan_shape), 1.f);
+				shape = GetShape(0 + i);
+				shape->setLocalPose(PxTransform(fans_pos[i], PxQuat((1.5708f * (i + 1)), PxVec3(0.f, 0.f, 1.f))));
+			}
+		}
+	};
 
 }
