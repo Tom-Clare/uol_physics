@@ -351,7 +351,7 @@ namespace PhysicsEngine
 		{
 			if (selected_actor)
 			{
-				for (unsigned int i = 53; i < actors.size(); i++)
+				for (unsigned int i = 93; i < actors.size(); i++)
 					if (selected_actor == actors[i])
 					{
 						HighlightOff(selected_actor);
@@ -362,7 +362,7 @@ namespace PhysicsEngine
 			}
 			else
 			{
-				selected_actor = actors[54];
+				selected_actor = actors[94];
 			}
 			HighlightOn(selected_actor);
 		}
@@ -452,6 +452,16 @@ namespace PhysicsEngine
 		((PxRevoluteJoint*)joint)->setRevoluteJointFlag(PxRevoluteJointFlag::eLIMIT_ENABLED, true); // and enable effects of the limits
 	};
 
+	void RevoluteJoint::setMinDistance(PxReal distance)
+	{
+		//((PxDistanceJoint*)joint)->setMinDistance(distance);
+	};
+
+	void RevoluteJoint::setMaxDistance(PxReal distance)
+	{
+		//((PxDistanceJoint*)joint)->setMinDistance(distance);
+	};
+
 	void RevoluteJoint::Weakify()
 	{
 		// make rope so weak it breaks instantly
@@ -470,6 +480,12 @@ namespace PhysicsEngine
 
 		joint = PxDistanceJointCreate(*GetPhysics(), px_first_actor, first_local_anchor, (PxRigidActor*)second_actor->Get(), second_local_actor);
 		joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true); // enable visulisation
+	};
+
+	void DistanceJoint::setDistance(PxReal distance)
+	{
+		((PxDistanceJoint*)joint)->setMinDistance(distance);
+		((PxDistanceJoint*)joint)->setMaxDistance(distance);
 	};
 
 	void DistanceJoint::Weakify()

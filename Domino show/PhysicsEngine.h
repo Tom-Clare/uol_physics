@@ -173,6 +173,9 @@ namespace PhysicsEngine
 
 		void SetLimits(PxReal, PxReal);
 
+		void setMinDistance(PxReal);
+		void setMaxDistance(PxReal);
+
 		void Weakify();
 	};
 
@@ -180,6 +183,8 @@ namespace PhysicsEngine
 	{
 	public:
 		DistanceJoint(Actor*, const PxTransform&, Actor*, const PxTransform&);
+
+		void setDistance(PxReal);
 
 		void Weakify();
 	};
