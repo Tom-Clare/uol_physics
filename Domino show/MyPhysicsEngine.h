@@ -7,6 +7,7 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <map>
 
 
 namespace PhysicsEngine
@@ -62,8 +63,8 @@ namespace PhysicsEngine
 		RevoluteJoint* windmill_connection;
 		RevoluteJoint* windmill_connection2;
 		std::vector<PxVec3> cargo_colours;
-		Cloth* cloth;
-		Cloth* cloth2;
+		std::vector<Cloth*> papers;
+		std::vector<float> scales;
 
 	public:
 		MySimulationEventCallback* my_callback;
@@ -162,24 +163,33 @@ namespace PhysicsEngine
 			//covered_box->Color(cargo_colours[4]); // 96, 192, 224
 			//Add(covered_box);
 
-			cloth = new Cloth(PxTransform(PxVec3(-2.f, 1.5f, 1.215f), PxQuat(1.5807f, PxVec3(1.f, 0.f, 0.f))), PxVec2(.15f, .3f), 1, 10, true);
-			cloth->setFrictionCoefficient(0.6);
-			cloth->Color(PxVec3(1.f, 1.f, 1.f));
-			Add(cloth);
-			cloth2 = new Cloth(PxTransform(PxVec3(-2.f, 1.5f, 1.215f), PxQuat(1.5807f, PxVec3(1.f, 0.f, 0.f))), PxVec2(.15f, .3f), 1, 10, true);
-			cloth2->setFrictionCoefficient(0.6);
-			cloth2->Color(PxVec3(1.f, 1.f, 1.f));
-			Add(cloth2);
+			Box* cargo2 = new Box(PxTransform(PxVec3(-6.5f, 1.29f, 2.5f)), cargo_shape, 0.05);
+			cargo2->Color(cargo_colours[1]);
+			Add(cargo2);
+			PxTransform noticeboard_pos = PxTransform(PxVec3(-3.449825f, 1.5f, 2.5f), PxQuat(1.5807f, PxVec3(0.f, 1.f, 0.f)));
+			BoxStatic* noticeboard = new BoxStatic(noticeboard_pos, PxVec3(1.f, .75f, 0.01275f), 0.05);
+			noticeboard->Color(PxVec3(0.7f, 0.7f, 0.7f));
+			Add(noticeboard);
+			PxTransform noticeboard_surface = PxTransform(PxVec3(noticeboard_pos.p[0], noticeboard_pos.p[1], noticeboard_pos.p[2] + 0.01275f), noticeboard_pos.q);
+			PopulateNoticeboard(noticeboard_surface);
+
 		}
 
 		//Custom udpate function
 		virtual void CustomUpdate() 
 		{
-			// vary wind applied to flag
+			//// vary wind applied to flag
 			float max = 1; // divide random number by upper bound to find random float
 			float force = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / max));
-			cloth->setExternalAcceleration(PxVec3(0, 0.f, 3 + force));
-			cloth2->setExternalAcceleration(PxVec3(0, 0.f, 1 + (force / 2)));
+
+			if (papers.size() == scales.size()) { // iteration between the two is valid
+				for (std::vector<Cloth*>::size_type i = 0; i != papers.size(); i++) { // for every paper
+					papers[i]->setExternalAcceleration(PxVec3((5 * scales[i]) + force, 0.f, 0.f));
+				}
+			}
+			
+
+			
 		}
 
 		PxVec3 createDominos(PxVec3 pos, float angle, int amount) {
@@ -243,6 +253,33 @@ namespace PhysicsEngine
 		//	}
 		//	return PxVec3(pos[0], pos[1], pos[2]);
 		//} // TODO create bendy lines with dominos
+
+		void PopulateNoticeboard(PxTransform pos)
+		{
+			//notepad
+			PxTransform notepad_pos = PxTransform(PxVec3(pos.p[0], pos.p[1] + .1f, pos.p[2] + .2f),pos.q);
+			Cloth* paper1 = new Cloth(notepad_pos, PxVec2(.15f, .3f), 1, 10, true);
+			paper1->setFrictionCoefficient(0.6);
+			paper1->Color(PxVec3(1.f, 1.f, 1.f));
+			Add(paper1);
+			Cloth* paper2 = new Cloth(notepad_pos, PxVec2(.15f, .3f), 1, 10, true);
+			paper2->setFrictionCoefficient(0.6);
+			paper2->Color(PxVec3(1.f, 1.f, 1.f));
+			Add(paper2);
+			papers.push_back(paper1);
+			scales.push_back(1.f);
+			papers.push_back(paper2);
+			scales.push_back(0.5f);
+
+			// sticky notes
+			Cloth* sticky1 = new Cloth(pos, PxVec2(.1f, .1f), 3, 3, true);
+			sticky1->setFrictionCoefficient(0.6);
+			sticky1->Color(PxVec3(1.f, 1.f, 1.f));
+			Add(sticky1);
+
+			papers.push_back(sticky1);
+			scales.push_back(1.f);
+		};
 
 		void beginShow() {
 			// This begins the show by pushing a "pebble" (convex mesh) from atop a pile of grit.

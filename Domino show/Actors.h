@@ -180,5 +180,4 @@ namespace PhysicsEngine
 			this->Color(PxVec3(240.f / 255.f, 240.f / 255.f, 240.f / 255.f));
 		}
 	};
-
 }
