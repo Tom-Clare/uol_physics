@@ -62,6 +62,8 @@ namespace PhysicsEngine
 		RevoluteJoint* windmill_connection;
 		RevoluteJoint* windmill_connection2;
 		std::vector<PxVec3> cargo_colours;
+		Cloth* cloth;
+		Cloth* cloth2;
 
 	public:
 		MySimulationEventCallback* my_callback;
@@ -89,7 +91,8 @@ namespace PhysicsEngine
 				PxVec3(199.f / 255.f, 73.f / 255.f, 0.f / 255.f), // maroon
 				PxVec3(0.f, 0.3f, 0.5f), // murky blue
 				PxVec3(211.f / 255.f, 222.f / 255.f, 222.f / 255.f), // silver-blue
-				PxVec3(250.f / 255.f, 237.f / 255.f, 125.f / 255.f) // weak yellow
+				PxVec3(250.f / 255.f, 237.f / 255.f, 125.f / 255.f), // weak yellow
+				PxVec3(96.f / 255.f, 192.f / 255.f, 224.f / 255.f) // 96, 192, 224
 			};
 
 			PxVec3 col_cardboard = PxVec3(194.f / 255.f, 172.f / 255.f, 122.f / 255.f); // pale grey-brown
@@ -154,13 +157,29 @@ namespace PhysicsEngine
 
 			// bavkground cargo boxes
 			BackgroundCargo();
-			
 
+			//Capsule* covered_box = new Capsule(PxTransform(PxVec3(7.f, .75f, -10.f)), PxVec2(0.5f, .4f));
+			//covered_box->Color(cargo_colours[4]); // 96, 192, 224
+			//Add(covered_box);
+
+			cloth = new Cloth(PxTransform(PxVec3(-2.f, 1.5f, 1.215f), PxQuat(1.5807f, PxVec3(1.f, 0.f, 0.f))), PxVec2(.15f, .3f), 1, 10, true);
+			cloth->setFrictionCoefficient(0.6);
+			cloth->Color(PxVec3(1.f, 1.f, 1.f));
+			Add(cloth);
+			cloth2 = new Cloth(PxTransform(PxVec3(-2.f, 1.5f, 1.215f), PxQuat(1.5807f, PxVec3(1.f, 0.f, 0.f))), PxVec2(.15f, .3f), 1, 10, true);
+			cloth2->setFrictionCoefficient(0.6);
+			cloth2->Color(PxVec3(1.f, 1.f, 1.f));
+			Add(cloth2);
 		}
 
 		//Custom udpate function
 		virtual void CustomUpdate() 
 		{
+			// vary wind applied to flag
+			float max = 1; // divide random number by upper bound to find random float
+			float force = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / max));
+			cloth->setExternalAcceleration(PxVec3(0, 0.f, 3 + force));
+			cloth2->setExternalAcceleration(PxVec3(0, 0.f, 1 + (force / 2)));
 		}
 
 		PxVec3 createDominos(PxVec3 pos, float angle, int amount) {
@@ -194,7 +213,7 @@ namespace PhysicsEngine
 			for (int i = 0; i < 8; i++)
 			{
 				back_cargo = new Box(PxTransform(positions[i]), cargo_shape, 0.05f);
-				back_cargo->Color(cargo_colours[std::rand() % 4]);
+				back_cargo->Color(cargo_colours[std::rand() % 5]);
 				Add(back_cargo);
 			}
 			
