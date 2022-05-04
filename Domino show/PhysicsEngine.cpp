@@ -339,37 +339,17 @@ namespace PhysicsEngine
 		return actors[index]; // get specific actor pointer from list of actor pointers
 	}
 
-	void Scene::SelectNextActor()
+	void Scene::SelectNextActor() // the scene should only select the suspended cargo container - actor[140]
 	{
 		int actor_offset = 138;
 
 #if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
 		std::vector<PxRigidDynamic*> actors(px_scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC));
-		if (actors.size() && (px_scene->getActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC, (PxActor**)&actors.front(), (PxU32)actors.size())))
 #else
 		std::vector<PxRigidDynamic*> actors(px_scene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC));
-		if (actors.size() && (px_scene->getActors(PxActorTypeFlag::eRIGID_DYNAMIC, (PxActor**)&actors.front(), (PxU32)actors.size())))
 #endif
-		{
-			if (selected_actor)
-			{
-				for (unsigned int i = actor_offset; i < actors.size(); i++)
-					if (selected_actor == actors[i])
-					{
-						HighlightOff(selected_actor);
-						//select the next actor
-						selected_actor = actors[(i+1)%actors.size()];
-						break;
-					}
-			}
-			else
-			{
-				selected_actor = actors[actor_offset + 1];
-			}
-			HighlightOn(selected_actor);
-		}
-		else
-			selected_actor = 0;
+		
+		selected_actor = actors[140];
 	}
 
 	std::vector<PxActor*> Scene::GetAllActors()
