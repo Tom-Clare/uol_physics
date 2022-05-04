@@ -227,5 +227,10 @@ namespace PhysicsEngine
 		{
 			((PxCloth*)actor)->setFrictionCoefficient(val);
 		}
+
+		void setClothFlag(PxClothFlag::Enum flag, bool value)
+		{
+			((PxCloth*)actor)->setClothFlag(flag, value);
+		}
 	};
 }

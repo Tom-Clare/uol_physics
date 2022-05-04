@@ -125,16 +125,15 @@ namespace PhysicsEngine
 			PxVec3 new_pos = PxVec3(-2.72f, 2.65f, 0.f);
 			new_pos = createDominos(new_pos, 0, num_domino);
 			createDominos(PxVec3(3.6f, 0.01f, 0.f), 0, 40);
-			//new_pos = createDominos1(new_pos, 0, 10, 0.2f);
 
 			crane = new Crane();
 			Add(crane);
 
 			// attach cargo box to crane
 			//CargoContainer* cargo2 = new CargoContainer(PxTransform(PxVec3(0.f, 20.f, 0.f)));
-			cargo3 = new Box(PxTransform(PxVec3(0.f, 30.f, 0.f)), cargo_shape, 0.05);
+			cargo3 = new Box(PxTransform(PxVec3(4.f, 30.f, 0.f)), cargo_shape, 0.05);
 			cargo3->Color(cargo_colours[1]);
-			this->rope = new DistanceJoint(nullptr, PxTransform(PxVec3(0.f, 40.f, 0.f)), cargo3, PxTransform(PxVec3(0.f, 0.f, 0.f)));
+			this->rope = new DistanceJoint(nullptr, PxTransform(PxVec3(4.f, 40.f, 0.f)), cargo3, PxTransform(PxVec3(0.f, 0.f, 0.f)));
 			Add(cargo3);
 			rope->setDistance(10.f);
 
@@ -163,12 +162,12 @@ namespace PhysicsEngine
 			//covered_box->Color(cargo_colours[4]); // 96, 192, 224
 			//Add(covered_box);
 
-			Box* cargo2 = new Box(PxTransform(PxVec3(-6.5f, 1.29f, 2.5f)), cargo_shape, 0.05);
+			Box* cargo2 = new Box(PxTransform(PxVec3(-9.5f, 1.29f, 2.5f)), cargo_shape, 0.05);
 			cargo2->Color(cargo_colours[1]);
 			Add(cargo2);
-			PxTransform noticeboard_pos = PxTransform(PxVec3(-3.449825f, 1.5f, 2.5f), PxQuat(1.5807f, PxVec3(0.f, 1.f, 0.f)));
+			PxTransform noticeboard_pos = PxTransform(PxVec3(-6.449825f, 1.5f, 2.5f), PxQuat(1.5807f, PxVec3(0.f, 1.f, 0.f)));
 			BoxStatic* noticeboard = new BoxStatic(noticeboard_pos, PxVec3(1.f, .75f, 0.01275f), 0.05);
-			noticeboard->Color(PxVec3(0.7f, 0.7f, 0.7f));
+			noticeboard->Color(PxVec3(84.f / 255.f, 43.f / 255.f, 0.f / 255.f)); // 84, 43, 0
 			Add(noticeboard);
 			PxTransform noticeboard_surface = PxTransform(PxVec3(noticeboard_pos.p[0], noticeboard_pos.p[1], noticeboard_pos.p[2] + 0.01275f), noticeboard_pos.q);
 			PopulateNoticeboard(noticeboard_surface);
@@ -184,12 +183,9 @@ namespace PhysicsEngine
 
 			if (papers.size() == scales.size()) { // iteration between the two is valid
 				for (std::vector<Cloth*>::size_type i = 0; i != papers.size(); i++) { // for every paper
-					papers[i]->setExternalAcceleration(PxVec3((5 * scales[i]) + force, 0.f, 0.f));
+					papers[i]->setExternalAcceleration(PxVec3((3 * scales[i]) + force, 0.f, force));
 				}
 			}
-			
-
-			
 		}
 
 		PxVec3 createDominos(PxVec3 pos, float angle, int amount) {
@@ -256,33 +252,76 @@ namespace PhysicsEngine
 
 		void PopulateNoticeboard(PxTransform pos)
 		{
+			// placeholder cloth object
+			Cloth* paper;
+			PxVec3 sticky_colour = PxVec3(247.f/255.f, 255.f/255.f, 23.f/255.f); //247, 255, 23
+
 			//notepad
-			PxTransform notepad_pos = PxTransform(PxVec3(pos.p[0], pos.p[1] + .1f, pos.p[2] + .2f),pos.q);
-			Cloth* paper1 = new Cloth(notepad_pos, PxVec2(.15f, .3f), 1, 10, true);
-			paper1->setFrictionCoefficient(0.6);
-			paper1->Color(PxVec3(1.f, 1.f, 1.f));
-			Add(paper1);
-			Cloth* paper2 = new Cloth(notepad_pos, PxVec2(.15f, .3f), 1, 10, true);
-			paper2->setFrictionCoefficient(0.6);
-			paper2->Color(PxVec3(1.f, 1.f, 1.f));
-			Add(paper2);
-			papers.push_back(paper1);
+			PxTransform notepad_pos = PxTransform(PxVec3(pos.p[0]+0.01f, pos.p[1] + .1f, pos.p[2] + .2f),pos.q);
+			paper = new Cloth(notepad_pos, PxVec2(.15f, .3f), 2, 10, true);
+			paper->setFrictionCoefficient(0.6);
+			paper->Color(PxVec3(1.f, 1.f, 1.f));
+			Add(paper);
+			paper->setClothFlag(PxClothFlag::eSCENE_COLLISION, false);
+			papers.push_back(paper);
 			scales.push_back(1.f);
-			papers.push_back(paper2);
+
+			paper = new Cloth(notepad_pos, PxVec2(.15f, .3f), 2, 10, true);
+			paper->setFrictionCoefficient(0.6);
+			paper->Color(PxVec3(1.f, 1.f, 1.f));
+			Add(paper);
+			paper->setClothFlag(PxClothFlag::eSCENE_COLLISION, false);
+			papers.push_back(paper);
 			scales.push_back(0.5f);
 
-			// sticky notes
-			Cloth* sticky1 = new Cloth(pos, PxVec2(.1f, .1f), 3, 3, true);
-			sticky1->setFrictionCoefficient(0.6);
-			sticky1->Color(PxVec3(1.f, 1.f, 1.f));
-			Add(sticky1);
+			//notepad 2
+			notepad_pos = PxTransform(PxVec3(pos.p[0] + 0.01f, pos.p[1] + .3f, pos.p[2] + .5f), pos.q);
+			paper = new Cloth(notepad_pos, PxVec2(.15f, .3f), 2, 10, true);
+			paper->setFrictionCoefficient(0.6);
+			paper->Color(PxVec3(252.f / 255.f, 255.f / 255.f, 168.f / 255.f)); // soft yellow
+			Add(paper);
+			paper->setClothFlag(PxClothFlag::eSCENE_COLLISION, false);
+			papers.push_back(paper);
+			scales.push_back(1.f);
 
-			papers.push_back(sticky1);
+			paper = new Cloth(notepad_pos, PxVec2(.15f, .3f), 2, 10, true);
+			paper->setFrictionCoefficient(0.6);
+			paper->Color(PxVec3(252.f / 255.f, 255.f / 255.f, 168.f / 255.f)); // soft yellow
+			Add(paper);
+			paper->setClothFlag(PxClothFlag::eSCENE_COLLISION, false);
+			papers.push_back(paper);
+			scales.push_back(0.5f);
+
+			// sticky note
+			paper = new Cloth(PxTransform(PxVec3(pos.p[0] + 0.01f, pos.p[1] + .5f, pos.p[2] - .4f), pos.q), PxVec2(.1f, .1f), 3, 3, true);
+			paper->setFrictionCoefficient(0.6);
+			paper->Color(sticky_colour);
+			Add(paper);
+			paper->setClothFlag(PxClothFlag::eSCENE_COLLISION, false);
+			papers.push_back(paper);
+			scales.push_back(1.f);
+
+			// sticky note
+			paper = new Cloth(PxTransform(PxVec3(pos.p[0] + 0.01f, pos.p[1] + .52f, pos.p[2] - .55f), pos.q), PxVec2(.1f, .1f), 3, 3, true);
+			paper->setFrictionCoefficient(0.6);
+			paper->Color(sticky_colour);
+			Add(paper);
+			paper->setClothFlag(PxClothFlag::eSCENE_COLLISION, false);
+			papers.push_back(paper);
+			scales.push_back(1.f);
+			
+			// sticky note
+			paper = new Cloth(PxTransform(PxVec3(pos.p[0] + 0.01f, pos.p[1] + .44f, pos.p[2] - .63f), pos.q), PxVec2(.1f, .1f), 3, 3, true);
+			paper->setFrictionCoefficient(0.6);
+			paper->Color(sticky_colour);
+			Add(paper);
+			paper->setClothFlag(PxClothFlag::eSCENE_COLLISION, false);
+			papers.push_back(paper);
 			scales.push_back(1.f);
 		};
 
 		void beginShow() {
-			// This begins the show by pushing a "pebble" (convex mesh) from atop a pile of grit.
+			// This begins the show by creating a "pebble" (convex mesh) atop a plank.
 
 			float scale = .05f;
 			std::vector<PxVec3> pebble_desc{

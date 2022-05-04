@@ -341,6 +341,8 @@ namespace PhysicsEngine
 
 	void Scene::SelectNextActor()
 	{
+		int actor_offset = 138;
+
 #if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
 		std::vector<PxRigidDynamic*> actors(px_scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC));
 		if (actors.size() && (px_scene->getActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC, (PxActor**)&actors.front(), (PxU32)actors.size())))
@@ -351,7 +353,7 @@ namespace PhysicsEngine
 		{
 			if (selected_actor)
 			{
-				for (unsigned int i = 93; i < actors.size(); i++)
+				for (unsigned int i = actor_offset; i < actors.size(); i++)
 					if (selected_actor == actors[i])
 					{
 						HighlightOff(selected_actor);
@@ -362,7 +364,7 @@ namespace PhysicsEngine
 			}
 			else
 			{
-				selected_actor = actors[94];
+				selected_actor = actors[actor_offset + 1];
 			}
 			HighlightOn(selected_actor);
 		}
@@ -396,7 +398,7 @@ namespace PhysicsEngine
 		{
 			PxVec3* color = ((UserData*)shapes[i]->userData)->color;
 			sactor_color_orig.push_back(*color);
-			*color += PxVec3(1.f,1.f,1.f); // TODO get rid of this
+			*color += PxVec3(.1f,.1f,.1f);
 		}
 	}
 
